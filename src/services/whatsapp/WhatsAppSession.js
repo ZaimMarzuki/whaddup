@@ -132,7 +132,7 @@ class WhatsAppSession {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Webhook-Source': 'chatery-whatsapp-api',
+                        'X-Webhook-Source': 'whaddup-api',
                         'X-Session-Id': this.sessionId,
                         'X-Webhook-Event': event
                     },
@@ -191,7 +191,7 @@ class WhatsAppSession {
                 version,
                 auth: state,
                 logger: pino({ level: 'silent' }),
-                browser: ['Chatery API', 'Chrome', '1.0.0'],
+                browser: ['Whaddup API', 'Chrome', '1.0.0'],
                 syncFullHistory: true
             });
 
@@ -1137,6 +1137,41 @@ class WhatsAppSession {
                 data: {
                     messageId: result.key.id,
                     chatId: jid,
+                    timestamp: new Date().toISOString()
+                }
+            };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    }
+
+    async sendReaction(chatId, emoji, messageId, fromMe = false) {
+        try {
+            if (!this.socket || this.connectionStatus !== 'connected') {
+                return { success: false, message: 'Session not connected' };
+            }
+
+            const jid = this.formatChatId(chatId);
+
+            const result = await this.socket.sendMessage(jid, {
+                react: {
+                    text: emoji,
+                    key: {
+                        remoteJid: jid,
+                        id: messageId,
+                        fromMe: fromMe
+                    }
+                }
+            });
+
+            return {
+                success: true,
+                message: 'Reaction sent successfully',
+                data: {
+                    messageId: result.key.id,
+                    chatId: jid,
+                    emoji,
+                    targetMessageId: messageId,
                     timestamp: new Date().toISOString()
                 }
             };

@@ -1,7 +1,7 @@
 {
-  "name": "chatery_whatsapp",
-  "version": "1.2.0",
-  "description": "Backend for chatery.app",
+  "name": "whaddup",
+  "version": "1.0.0",
+  "description": "WhatsApp API backend — whaddup",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -10,17 +10,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/farinchan/chatery_whatsapp.git"
+    "url": "git+https://github.com/zaimm/whaddup.git"
   },
   "keywords": [
-    "chatery"
+    "whaddup",
+    "whatsapp"
   ],
-  "author": "Fajri Rinaldi Chan",
+  "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/farinchan/chatery_whatsapp/issues"
+    "url": "https://github.com/zaimm/whaddup/issues"
   },
-  "homepage": "https://github.com/farinchan/chatery_whatsapp#readme",
+  "homepage": "https://github.com/zaimm/whaddup#readme",
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc.9",
     "cors": "^2.8.5",

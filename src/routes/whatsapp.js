@@ -497,6 +497,28 @@ router.post('/chats/send-button', checkSession, async (req, res) => {
     }
 });
 
+// Send reaction to a message
+router.post('/chats/send-reaction', checkSession, async (req, res) => {
+    try {
+        const { chatId, emoji, messageId, fromMe = false } = req.body;
+
+        if (!chatId || !messageId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields: chatId, messageId'
+            });
+        }
+
+        const result = await req.session.sendReaction(chatId, emoji || '', messageId, fromMe);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
 // Send poll message (alternative to buttons)
 router.post('/chats/send-poll', checkSession, async (req, res) => {
     try {

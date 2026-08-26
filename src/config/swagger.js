@@ -4,7 +4,7 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Chatery WhatsApp API',
+            title: 'Whaddup WhatsApp API',
             version: '1.0.0',
             description: `
 A powerful WhatsApp API backend built with Express.js and Baileys library.
@@ -28,18 +28,16 @@ A powerful WhatsApp API backend built with Express.js and Baileys library.
 All API endpoints require \`X-Api-Key\` header (if API_KEY is configured in .env).
 
 ## Full Documentation
-- [https://docs.chatery.app](https://docs.chatery.app)
-- [https://chatery-whatsapp-documentation.appwrite.network](https://chatery-whatsapp-documentation.appwrite.network)
+- [https://github.com/zaimm/whaddup](https://github.com/zaimm/whaddup)
 
 ## ⭐ Support This Project
-- [⭐ Star on GitHub](https://github.com/farinchan/chatery_backend) - Give us a star!
-- [☕ Buy Me a Coffee (saweria)](https://saweria.co/fajrichan) - Support the developer
+- [⭐ Star on GitHub](https://github.com/zaimm/whaddup) - Give us a star!
 
             `,
             contact: {
-                name: 'Fajri Rinaldi Chan',
-                email: 'fajri@gariskode.com',
-                url: 'https://github.com/farinchan'
+                name: '',
+                email: '',
+                url: 'https://github.com/zaimm/whaddup'
             },
             license: {
                 name: 'MIT',
