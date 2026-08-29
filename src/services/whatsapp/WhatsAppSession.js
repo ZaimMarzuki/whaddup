@@ -2371,6 +2371,7 @@ class WhatsAppSession {
             const { USyncQuery, USyncUser } = require('@whiskeysockets/baileys');
             const query = new USyncQuery()
                 .withContext('interactive')
+                .withContactProtocol()
                 .withDeviceProtocol()
                 .withLIDProtocol();
 
@@ -2379,14 +2380,22 @@ class WhatsAppSession {
             }
 
             const result = await this.socket.executeUSyncQuery(query);
+            console.log(`🔍 [${this.sessionId}] USync query for ${unresolvedLids.length} LIDs response:`, JSON.stringify(result));
+
             if (result && result.list) {
                 for (const item of result.list) {
-                    if (item.lid && item.id) {
-                        const lidJid = item.lid.toLowerCase();
-                        const pnJid = item.id.toLowerCase();
-                        if (this.store) {
-                            this.store.registerIdentity(lidJid, pnJid);
-                        }
+                    const id = (item.id || '').toLowerCase();
+                    const lid = (item.lid || '').toLowerCase();
+                    const phone = (item.phone || item.phoneNumber || '').toLowerCase();
+
+                    // Map if both LID and phone JID are present
+                    if (lid && id && lid.endsWith('@lid') && id.endsWith('@s.whatsapp.net')) {
+                        if (this.store) this.store.registerIdentity(lid, id);
+                    } else if (id && id.endsWith('@lid') && phone) {
+                        const pnJid = phone.includes('@') ? phone : `${phone.replace(/\D/g, '')}@s.whatsapp.net`;
+                        if (this.store) this.store.registerIdentity(id, pnJid);
+                    } else if (id && id.endsWith('@s.whatsapp.net') && lid) {
+                        if (this.store) this.store.registerIdentity(lid, id);
                     }
                 }
             }
@@ -2412,6 +2421,7 @@ class WhatsAppSession {
 
             const gid = this.formatJid(groupId, true);
             const metadata = await this.socket.groupMetadata(gid);
+            console.log(`👥 [${this.sessionId}] Group ${gid} raw participants:`, JSON.stringify(metadata.participants));
 
             // Collect all LIDs to batch resolve to Phone JIDs
             const allLids = [];
