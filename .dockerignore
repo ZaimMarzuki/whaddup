@@ -41,7 +41,7 @@ docs/
 screenshot/
 
 # N8N nodes package
-n8n-nodes-chatery-whatsapp/
+n8n-nodes-whaddup/
 
 # Tests
 test/

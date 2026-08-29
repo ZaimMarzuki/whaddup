@@ -15,16 +15,16 @@ RUN npm ci --only=production
 FROM node:20-alpine
 
 # Add labels
-LABEL maintainer="Fajri Rinaldi Chan <fajri@gariskode.com>"
-LABEL description="Chatery WhatsApp API - Multi-session WhatsApp API"
+LABEL maintainer="Zaim Marzuki"
+LABEL description="Whaddup WhatsApp API - Multi-session WhatsApp API"
 LABEL version="1.0.0"
 
 # Install runtime compatibility library
 RUN apk add --no-cache libc6-compat
 
 # Create non-root user for security
-RUN addgroup -g 1001 -S chatery && \
-    adduser -S -D -H -u 1001 -G chatery chatery
+RUN addgroup -g 1001 -S whaddup && \
+    adduser -S -D -H -u 1001 -G whaddup whaddup
 
 WORKDIR /app
 
@@ -36,10 +36,10 @@ COPY . .
 
 # Create directories for sessions and media with proper permissions
 RUN mkdir -p /app/sessions /app/public/media /app/store && \
-    chown -R chatery:chatery /app
+    chown -R whaddup:whaddup /app
 
 # Switch to non-root user
-USER chatery
+USER whaddup
 
 # Expose port
 EXPOSE 3000

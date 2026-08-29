@@ -7,37 +7,40 @@ const options = {
             title: 'Whaddup WhatsApp API',
             version: '1.0.0',
             description: `
-A powerful WhatsApp API backend built with Express.js and Baileys library.
+A powerful WhatsApp API backend built with Express.js and Baileys library. Multi-session, real-time events, and full messaging capabilities.
 
-## Quick Links
-- [🎛️ Dashboard](/dashboard) - Admin Dashboard with API Tester
-- [🔌 WebSocket Test](/ws-test) - Test real-time WebSocket events
-- [📄 OpenAPI JSON](/api-docs.json) - Download API specification
+## 🔗 Quick Links
+| Link | Description |
+|------|-------------|
+| [🎛️ Dashboard](/dashboard) | Admin Dashboard with API Tester, session management & live events |
+| [🔌 WebSocket Test](/ws-test) | Interactive real-time WebSocket event monitor |
+| [📄 OpenAPI JSON](/api-docs.json) | Download API specification |
+| [🔗 n8n Community Node](https://github.com/ZaimMarzuki/n8n-nodes-whaddup) | Automate WhatsApp with n8n workflows |
 
+## ✨ Features
+| Category | Capabilities |
+|----------|-------------|
+| **Messaging** | Text, Image, Document, Audio, Location, Contact, Poll, Buttons |
+| **Bulk Messaging** | Send to 100+ recipients with background job tracking |
+| **Reply/Quote** | Reply to specific messages with \`replyTo\` parameter |
+| **Sessions** | Multi-session support with persistent auth & configurable webhooks |
+| **Groups** | Create, manage participants, settings, invites |
+| **Labels** | WhatsApp Business label management |
+| **Real-time** | WebSocket events + configurable webhook delivery |
+| **Media** | Auto-save incoming media files to server |
+| **Dashboard** | Web UI with session management, QR scanner, API tester |
+| **Security** | API Key authentication via \`X-Api-Key\` header |
 
-## Features
-- Multi-Session Support
-- Real-time WebSocket Events
-- Group Management
-- Send Messages (Text, Image, Document, Location, Contact)
-- Auto-Save Media
-- Persistent Store
-- API Key Authentication
+## 🔐 Authentication
+All API endpoints require \`X-Api-Key\` header when API_KEY is configured in \`.env\`. Leave API_KEY empty to disable authentication.
 
-## Authentication
-All API endpoints require \`X-Api-Key\` header (if API_KEY is configured in .env).
-
-## Full Documentation
-- [https://github.com/zaimm/whaddup](https://github.com/zaimm/whaddup)
-
-## ⭐ Support This Project
-- [⭐ Star on GitHub](https://github.com/zaimm/whaddup) - Give us a star!
-
+## 📚 Documentation & Source
+- [GitHub Repository](https://github.com/ZaimMarzuki/whaddup)
+- [n8n Integration](https://github.com/ZaimMarzuki/n8n-nodes-whaddup) — install via n8n Community Nodes: \`n8n-nodes-whaddup\`
             `,
             contact: {
-                name: '',
-                email: '',
-                url: 'https://github.com/zaimm/whaddup'
+                name: 'Whaddup',
+                url: 'https://github.com/ZaimMarzuki/whaddup'
             },
             license: {
                 name: 'MIT',
@@ -61,6 +64,7 @@ All API endpoints require \`X-Api-Key\` header (if API_KEY is configured in .env
             { name: 'Bulk Messaging', description: 'Send bulk messages to multiple recipients (max 100 per request)' },
             { name: 'Chat History', description: 'Get chats, messages, contacts' },
             { name: 'Groups', description: 'Group management operations' },
+            { name: 'Labels', description: 'WhatsApp Business label management' },
             { name: 'WebSocket', description: 'WebSocket connection info' }
         ],
         components: {

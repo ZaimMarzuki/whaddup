@@ -1,6 +1,5 @@
-# 🚀 Chatery WhatsApp API
+# 🚀 Whaddup WhatsApp API
 
-![Chatery](https://sgp.cloud.appwrite.io/v1/storage/buckets/6941a5b70012d918c7aa/files/6941a69000028dec52d2/view?project=694019b0000abc694483&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbklkIjoiNjk0MWE4NjRjZGNhZGUxOTZmNTMiLCJyZXNvdXJjZUlkIjoiNjk0MWE1YjcwMDEyZDkxOGM3YWE6Njk0MWE2OTAwMDAyOGRlYzUyZDIiLCJyZXNvdXJjZVR5cGUiOiJmaWxlcyIsInJlc291cmNlSW50ZXJuYWxJZCI6IjE0NTE6MSIsImlhdCI6MTc2NTkxMDYyOH0.6DyBMKwzA6x__pQZn3vICDLdBfo0mEUlyMVAc3qEnyo)
 A powerful WhatsApp API backend built with Express.js and Baileys library. Supports multi-session management, real-time WebSocket events, group management, and media handling.
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
@@ -9,30 +8,7 @@ A powerful WhatsApp API backend built with Express.js and Baileys library. Suppo
 ![Socket.IO](https://img.shields.io/badge/Socket.IO-4.x-purple.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
----
-
-## 🤝 Sponsor
-
-<table>
-  <tr>
-    <td align="center" width="160">
-      <a href="https://sumopod.com" target="_blank">
-        <img src="screenshot/sumopod.png" alt="SumoPod" width="120" /><br/>
-      </a>
-    </td>
-    <td>
-      <strong>SumoPod — Container & Application Management</strong><br/>
-      SumoPod offers seamless container and application purchasing solutions for businesses of all sizes.<br/><br/>
-      <ul>
-        <li><strong>Container Marketplace</strong> — Explore and purchase from an extensive container library, all verified and ready for instant deployment.</li>
-        <li><strong>One-Click Deployment</strong> — Deploy containers to your infrastructure with one click, eliminating complex configuration processes.</li>
-        <li><strong>Automatic Updates</strong> — Keep your containers and applications up to date with automatic version updates and security patches.</li>
-      </ul>
-      <br/>
-      <a href="https://sumopod.com" target="_blank"><strong>✨ Chatery WhatsApp API is available on SumoPod — Deploy with one click, without complex configuration. Includes auto-updates and monitoring. → Get it now</strong></a>
-    </td>
-  </tr>
-</table>
+> Originally forked from [chatery_whatsapp](https://github.com/farinchan/chatery_whatsapp) by Farin Chan.
 
 ---
 
@@ -51,21 +27,10 @@ A powerful WhatsApp API backend built with Express.js and Baileys library. Suppo
 - 🔐 **Session Persistence** - Sessions survive server restarts
 - 🎛️ **Admin Dashboard** - Web-based dashboard with real-time monitoring and API tester
 - 📄 **Swagger UI** - Interactive API documentation at root URL
-
-## 📖 Full Documentation
-
-For complete and detailed documentation, please visit:
-
-| 🌐 Documentation | Link |
-|------------------|------|
-| **Primary Docs** | [https://docs.chatery.app](https://docs.chatery.app/) |
-| **Mirror Docs** | [https://chatery-whatsapp-documentation.appwrite.network](https://chatery-whatsapp-documentation.appwrite.network) |
-
-> 📚 The documentation includes complete API reference, examples, troubleshooting guides, and more.
+- 🔗 **n8n Integration** - Community node available at [n8n-nodes-whaddup](https://github.com/ZaimMarzuki/n8n-nodes-whaddup)
 
 ## 📋 Table of Contents
 
-- [Full Documentation](#-full-documentation)
 - [Installation](#-installation)
   - [Standard Installation](#option-1-standard-installation)
   - [Docker Installation](#option-2-docker-installation)
@@ -81,6 +46,7 @@ For complete and detailed documentation, please visit:
   - [Group Management](#group-management)
   - [Labels](#labels-whatsapp-business)
 - [WebSocket Events](#-websocket-events)
+- [Webhooks](#-webhooks)
 - [Examples](#-examples)
 
 ## 🛠 Installation
@@ -89,8 +55,8 @@ For complete and detailed documentation, please visit:
 
 ```bash
 # Clone the repository
-git clone https://github.com/farinchan/chatery_whatsapp.git
-cd chatery_whatsapp
+git clone https://github.com/ZaimMarzuki/whaddup.git
+cd whaddup
 
 # Install dependencies
 npm install
@@ -109,31 +75,31 @@ npm run dev
 
 ```bash
 # Clone the repository
-git clone https://github.com/farinchan/chatery_whatsapp.git
-cd chatery_whatsapp
+git clone https://github.com/ZaimMarzuki/whaddup.git
+cd whaddup
 
 # Create environment file
 cp .env.example .env
 
 # Build and run with Docker Compose
-docker-compose up -d
+docker compose up -d --build
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 
 # Stop the container
-docker-compose down
+docker compose down
 ```
 
 #### Docker Commands
 
 | Command | Description |
 |---------|-------------|
-| `docker-compose up -d` | Start container in background |
-| `docker-compose down` | Stop and remove container |
-| `docker-compose logs -f` | View live logs |
-| `docker-compose restart` | Restart container |
-| `docker-compose build --no-cache` | Rebuild image |
+| `docker compose up -d --build` | Build and start container in background |
+| `docker compose down` | Stop and remove container |
+| `docker compose logs -f` | View live logs |
+| `docker compose restart` | Restart container |
+| `docker compose build --no-cache` | Rebuild image |
 
 #### Docker Volumes
 
@@ -141,9 +107,9 @@ The following data is persisted across container restarts:
 
 | Volume | Path | Description |
 |--------|------|-------------|
-| `chatery_sessions` | `/app/sessions` | WhatsApp session data |
-| `chatery_media` | `/app/public/media` | Received media files |
-| `chatery_store` | `/app/store` | Message history store |
+| `whaddup_sessions` | `/app/sessions` | WhatsApp session data |
+| `whaddup_media` | `/app/public/media` | Received media files |
+| `whaddup_store` | `/app/store` | Message history store |
 
 ## ⚙ Configuration
 
@@ -371,21 +337,6 @@ PATCH /sessions/:sessionId/config
   "webhooks": [
     { "url": "https://new-webhook.com/endpoint", "events": ["message", "connection.update"] }
   ]
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Session config updated",
-  "data": {
-    "sessionId": "mysession",
-    "metadata": { "userId": "user123", "newField": "value" },
-    "webhooks": [
-      { "url": "https://new-webhook.com/endpoint", "events": ["message", "connection.update"] }
-    ]
-  }
 }
 ```
 
@@ -640,7 +591,7 @@ POST /chats/send-poll
 POST /chats/send-button
 ```
 
-> ⚠️ **Note:** WhatsApp deprecated button messages in 2022. This endpoint now uses **Poll** as an alternative. For actual interactive buttons, you need WhatsApp Business API (Cloud API).
+> ⚠️ **Note:** WhatsApp deprecated button messages in 2022. This endpoint now uses **Poll** as an alternative.
 
 **Body:**
 ```json
@@ -648,7 +599,7 @@ POST /chats/send-button
   "sessionId": "mysession",
   "chatId": "628123456789",
   "text": "Please choose an option:",
-  "footer": "Powered by Chatery",
+  "footer": "Powered by Whaddup",
   "buttons": ["Option 1", "Option 2", "Option 3"],
   "typingTime": 2000,
   "replyTo": null
@@ -773,15 +724,6 @@ POST /chats/send-bulk-image
 }
 ```
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `sessionId` | string | Required. Session ID |
-| `recipients` | array | Required. Array of phone numbers (max 100) |
-| `imageUrl` | string | Required. Direct URL to image file |
-| `caption` | string | Optional. Image caption |
-| `delayBetweenMessages` | number | Optional. Delay between messages in ms (default: 1000) |
-| `typingTime` | number | Optional. Typing indicator duration in ms (default: 0) |
-
 #### Send Bulk Document
 ```http
 POST /chats/send-bulk-document
@@ -799,16 +741,6 @@ POST /chats/send-bulk-document
   "typingTime": 0
 }
 ```
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `sessionId` | string | Required. Session ID |
-| `recipients` | array | Required. Array of phone numbers (max 100) |
-| `documentUrl` | string | Required. Direct URL to document |
-| `filename` | string | Required. Filename to display |
-| `mimetype` | string | Optional. MIME type (default: application/pdf) |
-| `delayBetweenMessages` | number | Optional. Delay between messages in ms (default: 1000) |
-| `typingTime` | number | Optional. Typing indicator duration in ms (default: 0) |
 
 #### Get Bulk Job Status
 ```http
@@ -847,14 +779,6 @@ GET /chats/bulk-status/:jobId
 }
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `status` | string | `processing` or `completed` |
-| `progress` | number | Progress percentage (0-100) |
-| `sent` | number | Successfully sent count |
-| `failed` | number | Failed count |
-| `details` | array | Per-recipient status with timestamps |
-
 #### Get All Bulk Jobs
 ```http
 POST /chats/bulk-jobs
@@ -864,26 +788,6 @@ POST /chats/bulk-jobs
 ```json
 {
   "sessionId": "mysession"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "jobId": "bulk_1704326400000_abc123def",
-      "type": "text",
-      "status": "completed",
-      "total": 50,
-      "sent": 48,
-      "failed": 2,
-      "progress": 100,
-      "createdAt": "2026-01-04T10:00:00.000Z",
-      "completedAt": "2026-01-04T10:02:30.000Z"
-    }
-  ]
 }
 ```
 
@@ -961,8 +865,6 @@ POST /chats/info
 POST /chats/mark-read
 ```
 
-Mark all unread messages in a chat as read. Works for both personal and group chats.
-
 **Body:**
 ```json
 {
@@ -975,27 +877,6 @@ Mark all unread messages in a chat as read. Works for both personal and group ch
 |-----------|------|-------------|
 | `sessionId` | string | Required. Session ID |
 | `chatId` | string | Required. Phone number or group ID (`@c.us` or `@g.us`) |
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Chat marked as read",
-  "data": {
-    "chatId": "628123456789@c.us",
-    "isGroup": false,
-    "markedCount": 5
-  }
-}
-```
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `chatId` | string | Chat ID that was marked as read |
-| `isGroup` | boolean | Whether the chat is a group |
-| `markedCount` | number | Number of messages marked as read |
-
-> **Note:** Messages must be received after the server starts to be in the store. If `markedCount` is 0, there were no unread messages in the store.
 
 ---
 
@@ -1010,24 +891,6 @@ POST /groups
 ```json
 {
   "sessionId": "mysession"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "count": 5,
-    "groups": [
-      {
-        "id": "123456789@g.us",
-        "subject": "My Group",
-        "participantsCount": 25,
-        "creation": 1609459200
-      }
-    ]
-  }
 }
 ```
 
@@ -1058,23 +921,6 @@ POST /groups/metadata
 }
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": "123456789@g.us",
-    "subject": "My Group",
-    "description": "Group description",
-    "participants": [
-      { "id": "628123456789@c.us", "admin": "superadmin" },
-      { "id": "628987654321@c.us", "admin": null }
-    ],
-    "size": 25
-  }
-}
-```
-
 #### Add Participants
 ```http
 POST /groups/participants/add
@@ -1094,27 +940,9 @@ POST /groups/participants/add
 POST /groups/participants/remove
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us",
-  "participants": ["628111222333"]
-}
-```
-
 #### Promote to Admin
 ```http
 POST /groups/participants/promote
-```
-
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us",
-  "participants": ["628111222333"]
-}
 ```
 
 #### Demote from Admin
@@ -1122,41 +950,14 @@ POST /groups/participants/promote
 POST /groups/participants/demote
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us",
-  "participants": ["628111222333"]
-}
-```
-
 #### Update Group Subject (Name)
 ```http
 POST /groups/subject
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us",
-  "subject": "New Group Name"
-}
-```
-
 #### Update Group Description
 ```http
 POST /groups/description
-```
-
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us",
-  "description": "This is the new group description"
-}
 ```
 
 #### Update Group Settings
@@ -1185,26 +986,9 @@ POST /groups/settings
 POST /groups/picture
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us",
-  "imageUrl": "https://example.com/group-pic.jpg"
-}
-```
-
 #### Leave Group
 ```http
 POST /groups/leave
-```
-
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us"
-}
 ```
 
 #### Join Group via Invite
@@ -1212,50 +996,14 @@ POST /groups/leave
 POST /groups/join
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "inviteCode": "https://chat.whatsapp.com/AbCdEfGhIjKlMn"
-}
-```
-
 #### Get Invite Code
 ```http
 POST /groups/invite-code
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "groupId": "123456789@g.us",
-    "inviteCode": "AbCdEfGhIjKlMn",
-    "inviteLink": "https://chat.whatsapp.com/AbCdEfGhIjKlMn"
-  }
-}
-```
-
 #### Revoke Invite Code
 ```http
 POST /groups/revoke-invite
-```
-
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "groupId": "123456789@g.us"
-}
 ```
 
 ---
@@ -1267,27 +1015,6 @@ WhatsApp Business labels help you organize and categorize chats. Available only 
 ### Get All Labels
 ```http
 POST /labels
-```
-
-**Body:**
-```json
-{
-  "sessionId": "mysession"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "labels": [
-      { "id": "1", "name": "New Customer", "color": 0 },
-      { "id": "2", "name": "VIP", "color": 5 }
-    ],
-    "count": 2
-  }
-}
 ```
 
 ### Create/Update Label
@@ -1312,30 +1039,9 @@ POST /labels/create
 | `colorId` | number | Optional. Color ID (0-19), default: 0 |
 | `labelId` | string | Optional. Existing label ID to update |
 
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Label created successfully",
-  "data": {
-    "labelId": "3",
-    "name": "My Label",
-    "color": 3
-  }
-}
-```
-
 ### Delete Label
 ```http
 POST /labels/delete
-```
-
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "labelId": "3"
-}
 ```
 
 ### Add Label to Chat
@@ -1343,53 +1049,14 @@ POST /labels/delete
 POST /labels/chat/add
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "chatId": "628123456789",
-  "labelId": "3"
-}
-```
-
 ### Remove Label from Chat
 ```http
 POST /labels/chat/remove
 ```
 
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "chatId": "628123456789",
-  "labelId": "3"
-}
-```
-
 ### Get Labels for Chat
 ```http
 POST /labels/chat
-```
-
-**Body:**
-```json
-{
-  "sessionId": "mysession",
-  "chatId": "628123456789"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "chatId": "628123456789@c.us",
-    "labels": [
-      { "id": "3", "name": "My Label", "color": 3 }
-    ]
-  }
-}
 ```
 
 > **Note:** Labels are only available for WhatsApp Business accounts. Personal accounts cannot use labels.
@@ -1422,7 +1089,7 @@ socket.emit('unsubscribe', 'mysession');
 | `connection.update` | Connection status changed | `{ sessionId, status, phoneNumber?, name?, timestamp }` |
 | `message` | New message received | `{ sessionId, message, timestamp }` |
 | `message.sent` | Message sent confirmation | `{ sessionId, message, timestamp }` |
-| `message.update` | Message status update (read, delivered) | `{ sessionId, update, timestamp }` |
+| `message.update` | Message status update | `{ sessionId, update, timestamp }` |
 | `message.reaction` | Message reaction added | `{ sessionId, reactions, timestamp }` |
 | `message.revoke` | Message deleted/revoked | `{ sessionId, key, participant, timestamp }` |
 | `chat.update` | Chat updated | `{ sessionId, chats, timestamp }` |
@@ -1448,17 +1115,6 @@ socket.on('connect', () => {
 
 socket.on('message', (data) => {
   console.log('New message:', data.message);
-  // {
-  //   sessionId: 'mysession',
-  //   message: {
-  //     id: 'ABC123',
-  //     from: '628123456789@c.us',
-  //     text: 'Hello!',
-  //     timestamp: 1234567890,
-  //     ...
-  //   },
-  //   timestamp: '2024-01-15T10:30:00.000Z'
-  // }
 });
 
 socket.on('qr', (data) => {
@@ -1484,8 +1140,6 @@ Open `http://localhost:3000/ws-test` in your browser for an interactive WebSocke
 You can configure multiple webhook URLs to receive events from your WhatsApp session. Each webhook can subscribe to specific events.
 
 ### Setup Multiple Webhooks
-
-Set webhooks when creating or updating a session:
 
 ```bash
 # When creating session with multiple webhooks
@@ -1514,20 +1168,9 @@ curl -X DELETE http://localhost:3000/api/whatsapp/sessions/mysession/webhooks \
   -d '{
     "url": "https://new-webhook.com/endpoint"
   }'
-
-# Update all webhooks
-curl -X PATCH http://localhost:3000/api/whatsapp/sessions/mysession/config \
-  -H "Content-Type: application/json" \
-  -d '{
-    "webhooks": [
-      { "url": "https://only-this-one.com/webhook", "events": ["all"] }
-    ]
-  }'
 ```
 
 ### Webhook Payload
-
-All configured webhook endpoints will receive POST requests with this format:
 
 ```json
 {
@@ -1552,7 +1195,7 @@ All configured webhook endpoints will receive POST requests with this format:
 | Header | Value |
 |--------|-------|
 | `Content-Type` | `application/json` |
-| `X-Webhook-Source` | `chatery-whatsapp-api` |
+| `X-Webhook-Source` | `whaddup-whatsapp-api` |
 | `X-Session-Id` | Session ID |
 | `X-Webhook-Event` | Event name |
 
@@ -1572,30 +1215,17 @@ Set `events: ["all"]` to receive all events, or specify individual events per we
 GET /api/websocket/stats
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "totalConnections": 5,
-    "sessionRooms": {
-      "mysession": 2,
-      "othersession": 1
-    }
-  }
-}
-```
-
 ---
 
 ## 📁 Project Structure
 
 ```
-chatery_backend/
+whaddup/
 ├── index.js                 # Application entry point
 ├── package.json
 ├── .env                     # Environment variables
-├── README.md                # Documentation
+├── Dockerfile               # Docker build config
+├── docker-compose.yml       # Docker Compose config
 ├── public/
 │   ├── dashboard.html       # Admin dashboard
 │   ├── websocket-test.html  # WebSocket test page
@@ -1607,6 +1237,11 @@ chatery_backend/
 │       ├── creds.json
 │       └── store.json
 └── src/
+    ├── config/
+    │   ├── swagger.js
+    │   └── swagger-paths.js
+    ├── middleware/
+    │   └── apiKeyAuth.js
     ├── routes/
     │   └── whatsapp.js      # API routes
     └── services/
@@ -1630,26 +1265,28 @@ chatery_backend/
 const axios = require('axios');
 
 const API_URL = 'http://localhost:3000/api/whatsapp';
+const API_KEY = 'your_api_key';
+const headers = { 'X-Api-Key': API_KEY };
 
 // Create session
 async function createSession(sessionId) {
-  const response = await axios.post(`${API_URL}/sessions/${sessionId}/connect`);
+  const response = await axios.post(`${API_URL}/sessions/${sessionId}/connect`, {}, { headers });
   return response.data;
 }
 
 // Send message
-async function sendMessage(sessionId, to, message) {
+async function sendMessage(sessionId, chatId, message) {
   const response = await axios.post(`${API_URL}/chats/send-text`, {
     sessionId,
-    to,
+    chatId,
     message
-  });
+  }, { headers });
   return response.data;
 }
 
 // Get all groups
 async function getGroups(sessionId) {
-  const response = await axios.post(`${API_URL}/groups`, { sessionId });
+  const response = await axios.post(`${API_URL}/groups`, { sessionId }, { headers });
   return response.data;
 }
 ```
@@ -1660,26 +1297,28 @@ async function getGroups(sessionId) {
 import requests
 
 API_URL = 'http://localhost:3000/api/whatsapp'
+API_KEY = 'your_api_key'
+HEADERS = {'X-Api-Key': API_KEY}
 
 # Create session
 def create_session(session_id):
-    response = requests.post(f'{API_URL}/sessions/{session_id}/connect')
+    response = requests.post(f'{API_URL}/sessions/{session_id}/connect', headers=HEADERS)
     return response.json()
 
 # Send message
-def send_message(session_id, to, message):
+def send_message(session_id, chat_id, message):
     response = requests.post(f'{API_URL}/chats/send-text', json={
         'sessionId': session_id,
-        'to': to,
+        'chatId': chat_id,
         'message': message
-    })
+    }, headers=HEADERS)
     return response.json()
 
 # Get all groups
 def get_groups(session_id):
     response = requests.post(f'{API_URL}/groups', json={
         'sessionId': session_id
-    })
+    }, headers=HEADERS)
     return response.json()
 ```
 
@@ -1701,51 +1340,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## ☕ Support & Donate
-
-If you find this project helpful, consider supporting the development:
-
-<p align="center">
-  <a href="https://saweria.co/https://saweria.co/fajrichan">
-    <img src="https://img.shields.io/badge/Saweria-Buy%20Me%20a%20Coffee-orange?style=for-the-badge&logo=ko-fi" alt="Saweria" />
-  </a>
-  <a href="https://paypal.me/farinchan">
-    <img src="https://img.shields.io/badge/PayPal-Donate-blue?style=for-the-badge&logo=paypal" alt="PayPal" />
-  </a>
-  
-</p>
-
-<p align="center">
-  <a href="https://github.com/farinchan/chatery_whatsapp">
-    <img src="https://img.shields.io/github/stars/farinchan/chatery_whatsapp?style=social" alt="GitHub Stars" />
-  </a>
-  <a href="https://github.com/farinchan/chatery_whatsapp/fork">
-    <img src="https://img.shields.io/github/forks/farinchan/chatery_whatsapp?style=social" alt="GitHub Forks" />
-  </a>
-</p>
-
-Your support helps me maintain and improve this project! ❤️
-
----
-
-## 👨‍💻 Author
-
-**Fajri Rinaldi Chan** (Farin Chan)
-
-<p align="left">
-  <a href="https://github.com/farinchan">
-    <img src="https://img.shields.io/badge/GitHub-@farinchan-181717?style=for-the-badge&logo=github" alt="GitHub" />
-  </a>
-  <a href="https://www.linkedin.com/in/fajri-chan">
-    <img src="https://img.shields.io/badge/LinkedIn-farinchan-0077B5?style=for-the-badge&logo=linkedin" alt="LinkedIn" />
-  </a>
-  <a href="https://www.instagram.com/fajri_chan">
-    <img src="https://img.shields.io/badge/Instagram-@farinchan-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
-  </a>
-</p>
-
----
-
 ## 🔗 Quick Links
 
 | Resource | URL |
@@ -1757,6 +1351,7 @@ Your support helps me maintain and improve this project! ❤️
 | 📊 WebSocket Stats | http://localhost:3000/api/websocket/stats |
 | ❤️ Health Check | http://localhost:3000/api/health |
 | 📋 OpenAPI JSON | http://localhost:3000/api-docs.json |
+| 🔗 n8n Community Node | https://github.com/ZaimMarzuki/n8n-nodes-whaddup |
 
 ---
 
