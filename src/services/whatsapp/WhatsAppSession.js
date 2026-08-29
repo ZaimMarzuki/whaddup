@@ -258,8 +258,8 @@ class WhatsAppSession {
                 
                 if (this.socket.user) {
                     this.phoneNumber = this.socket.user.id.split(':')[0];
-                    this.name = this.socket.user.name || 'Unknown';
-                    console.log(`👤 [${this.sessionId}] Connected as: ${this.name} (${this.phoneNumber})`);
+                    this.name = this.socket.user.name || this.socket.user.notify || this.socket.user.verifiedName || null;
+                    console.log(`👤 [${this.sessionId}] Connected as: ${this.name || this.sessionId} (${this.phoneNumber})`);
                     
                     // Register me JID, LID, and Phone Number
                     if (this.store) {

@@ -1432,10 +1432,10 @@
                 const webhookCount = session.webhooks ? session.webhooks.length : 0;
                 return `
                 <div class="session-item">
-                    <div class="session-avatar">${session.name ? session.name[0].toUpperCase() : session.sessionId[0].toUpperCase()}</div>
+                    <div class="session-avatar">${(session.sessionId || 'S')[0].toUpperCase()}</div>
                     <div class="session-info">
-                        <div class="session-name">${session.name || session.sessionId}</div>
-                        <div class="session-phone">${session.phoneNumber || session.sessionId}</div>
+                        <div class="session-name">${session.sessionId}</div>
+                        <div class="session-phone">${session.phoneNumber ? `${session.phoneNumber}${session.name && session.name !== 'Unknown' ? ` • ${session.name}` : ''}` : 'Not connected'}</div>
                         ${webhookCount > 0 ? `<div class="session-webhooks" style="font-size: 11px; color: #10b981;">🔗 ${webhookCount} webhook${webhookCount > 1 ? 's' : ''}</div>` : ''}
                     </div>
                     <div class="session-status ${session.status}">
@@ -1490,7 +1490,10 @@
             const connectedSessions = sessions.filter(s => s.status === 'connected');
 
             select.innerHTML = '<option value="">Select session...</option>' +
-                connectedSessions.map(s => `<option value="${s.sessionId}">${s.name || s.sessionId}</option>`).join('');
+                connectedSessions.map(s => {
+                    const label = s.phoneNumber ? `${s.sessionId} (${s.phoneNumber})` : s.sessionId;
+                    return `<option value="${s.sessionId}">${label}</option>`;
+                }).join('');
         }
 
         // Create Session
