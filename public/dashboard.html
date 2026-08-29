@@ -371,6 +371,47 @@
             color: var(--text-muted);
         }
 
+        /* Login Modal Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 15, 29, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .login-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .login-overlay.active .login-box {
+            transform: scale(1);
+        }
+
         /* QR Code Modal */
         .modal-overlay {
             position: fixed;
@@ -1080,6 +1121,46 @@
         </div>
     </footer>
 
+    <!-- Login Modal Overlay -->
+    <div class="login-overlay active" id="loginOverlay">
+        <div class="login-box">
+            <div class="logo-text" style="justify-content: center; font-size: 28px; margin-bottom: 8px;">
+                Whaddup<span>API</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Sign in to access Whaddup Dashboard</p>
+
+            <div id="loginErrorAlert" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; text-align: left;">
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" style="text-align: left;">
+                <div class="form-group">
+                    <label class="form-label" for="loginUsername">Username</label>
+                    <input type="text" class="form-input" id="loginUsername" placeholder="Enter username" autocomplete="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Enter password" autocomplete="current-password" required style="padding-right: 40px;">
+                        <button type="button" onclick="togglePasswordVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px;" title="Toggle Password Visibility">
+                            <span id="passwordEye">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; font-size: 13px; color: var(--text-muted);">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="rememberMe" checked style="accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer;"> Remember me
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px; font-weight: 600;">
+                    <span id="loginBtnText">Sign In</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- QR Modal -->
     <div class="modal-overlay" id="qrModal">
         <div class="modal">
@@ -1238,8 +1319,8 @@
 
         // Check authentication on page load
         function checkAuth() {
-            const authToken = sessionStorage.getItem('dashboard_auth');
-            const storedApiKey = sessionStorage.getItem('api_key');
+            const authToken = localStorage.getItem('dashboard_auth') || sessionStorage.getItem('dashboard_auth');
+            const storedApiKey = localStorage.getItem('api_key') || sessionStorage.getItem('api_key');
             if (authToken === 'authenticated') {
                 isAuthenticated = true;
                 if (storedApiKey) {
@@ -1250,21 +1331,47 @@
             return false;
         }
 
-        // Login with prompt
-        async function promptLogin() {
-            const username = prompt('🔐 Dashboard Login\n\nUsername:');
-            if (username === null) {
-                alert('❌ Login required to access dashboard');
-                window.location.href = '/';
-                return false;
+        function showLoginModal() {
+            const overlay = document.getElementById('loginOverlay');
+            if (overlay) {
+                overlay.classList.add('active');
+                setTimeout(() => {
+                    document.getElementById('loginUsername')?.focus();
+                }, 100);
             }
+        }
 
-            const password = prompt('🔑 Password:');
-            if (password === null) {
-                alert('❌ Login required to access dashboard');
-                window.location.href = '/';
-                return false;
+        function hideLoginModal() {
+            const overlay = document.getElementById('loginOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
             }
+        }
+
+        function togglePasswordVisibility() {
+            const pwd = document.getElementById('loginPassword');
+            const eye = document.getElementById('passwordEye');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                eye.textContent = '🙈';
+            } else {
+                pwd.type = 'password';
+                eye.textContent = '👁️';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const errorAlert = document.getElementById('loginErrorAlert');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const btnText = document.getElementById('loginBtnText');
+
+            errorAlert.style.display = 'none';
+            submitBtn.disabled = true;
+            btnText.innerHTML = '<div class="spinner" style="width: 16px; height: 16px; margin: 0 auto; border-color: rgba(255,255,255,0.3); border-top-color: #fff;"></div>';
 
             try {
                 const response = await fetch('/api/dashboard/login', {
@@ -1276,45 +1383,48 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    sessionStorage.setItem('dashboard_auth', 'authenticated');
+                    const storage = rememberMe ? localStorage : sessionStorage;
+                    storage.setItem('dashboard_auth', 'authenticated');
                     isAuthenticated = true;
 
-                    // Ask for API key (optional)
-                    const inputApiKey = prompt('🔑 API Key (optional - leave blank if not configured):');
-                    if (inputApiKey && inputApiKey.trim()) {
-                        apiKey = inputApiKey.trim();
-                        sessionStorage.setItem('api_key', apiKey);
+                    // Automatically use API key returned by server (no manual prompt needed!)
+                    if (data.apiKey) {
+                        apiKey = data.apiKey;
+                        storage.setItem('api_key', apiKey);
                     }
 
-                    alert('✅ Login successful! Welcome to Whaddup Dashboard.');
-                    return true;
+                    hideLoginModal();
+                    showToast('success', 'Login successful! Welcome to Whaddup.');
+                    initDashboard();
                 } else {
-                    alert('❌ ' + data.message);
-                    return promptLogin(); // Retry
+                    errorAlert.textContent = '❌ ' + (data.message || 'Invalid username or password');
+                    errorAlert.style.display = 'block';
                 }
             } catch (error) {
-                alert('❌ Login failed: ' + error.message);
-                return promptLogin(); // Retry
+                errorAlert.textContent = '❌ Connection error: ' + error.message;
+                errorAlert.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = 'Sign In';
             }
         }
 
         // Logout
         function logout() {
+            localStorage.removeItem('dashboard_auth');
+            localStorage.removeItem('api_key');
             sessionStorage.removeItem('dashboard_auth');
             sessionStorage.removeItem('api_key');
             apiKey = '';
             isAuthenticated = false;
-            alert('👋 Logged out successfully');
-            window.location.reload();
+            showLoginModal();
+            showToast('info', 'Logged out successfully');
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check if already authenticated
-            if (!checkAuth()) {
-                const loggedIn = await promptLogin();
-                if (!loggedIn) return;
-            }
+        let isInitialized = false;
+        function initDashboard() {
+            if (isInitialized) return;
+            isInitialized = true;
 
             connectWebSocket();
             loadSessions();
@@ -1323,9 +1433,21 @@
 
             // Refresh stats every 30 seconds
             setInterval(() => {
-                loadSessions();
-                loadWsStats();
+                if (isAuthenticated) {
+                    loadSessions();
+                    loadWsStats();
+                }
             }, 30000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                hideLoginModal();
+                initDashboard();
+            } else {
+                showLoginModal();
+            }
         });
 
         // WebSocket Connection

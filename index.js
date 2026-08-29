@@ -76,14 +76,15 @@ app.get('/api/health', (req, res) => {
 // Dashboard Login
 app.post('/api/dashboard/login', (req, res) => {
     const { username, password } = req.body;
-    
+
     const validUsername = process.env.DASHBOARD_USERNAME || 'admin';
     const validPassword = process.env.DASHBOARD_PASSWORD || 'admin123';
-    
+
     if (username === validUsername && password === validPassword) {
         res.json({
             success: true,
-            message: 'Login successful'
+            message: 'Login successful',
+            apiKey: process.env.API_KEY || ''
         });
     } else {
         res.status(401).json({
