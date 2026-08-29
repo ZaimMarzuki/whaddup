@@ -2359,6 +2359,42 @@ class WhatsAppSession {
         }
     }
 
+    async resolveLidsBatch(lids = []) {
+        if (!this.socket || this.connectionStatus !== 'connected') return;
+
+        const unresolvedLids = [...new Set(lids)]
+            .filter(l => l && typeof l === 'string' && l.endsWith('@lid') && (!this.store || !this.store.resolveIdentity(l)));
+
+        if (unresolvedLids.length === 0) return;
+
+        try {
+            const { USyncQuery, USyncUser } = require('@whiskeysockets/baileys');
+            const query = new USyncQuery()
+                .withContext('interactive')
+                .withDeviceProtocol()
+                .withLIDProtocol();
+
+            for (const lid of unresolvedLids) {
+                query.withUser(new USyncUser().withId(lid));
+            }
+
+            const result = await this.socket.executeUSyncQuery(query);
+            if (result && result.list) {
+                for (const item of result.list) {
+                    if (item.lid && item.id) {
+                        const lidJid = item.lid.toLowerCase();
+                        const pnJid = item.id.toLowerCase();
+                        if (this.store) {
+                            this.store.registerIdentity(lidJid, pnJid);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(`⚠️ [${this.sessionId}] Could not batch resolve LIDs:`, error.message);
+        }
+    }
+
     /**
      * Get group metadata
      * @param {string} groupId - Group JID
@@ -2377,31 +2413,97 @@ class WhatsAppSession {
             const gid = this.formatJid(groupId, true);
             const metadata = await this.socket.groupMetadata(gid);
 
+            // Collect all LIDs to batch resolve to Phone JIDs
+            const allLids = [];
+            if (metadata.owner && metadata.owner.endsWith('@lid')) allLids.push(metadata.owner);
+            if (metadata.subjectOwner && metadata.subjectOwner.endsWith('@lid')) allLids.push(metadata.subjectOwner);
+            if (Array.isArray(metadata.participants)) {
+                for (const p of metadata.participants) {
+                    const pid = p.id || '';
+                    if (pid.endsWith('@lid')) allLids.push(pid);
+                }
+            }
+
+            if (allLids.length > 0) {
+                await this.resolveLidsBatch(allLids);
+            }
+
+            const resolveId = (id) => {
+                if (!id) return id;
+                if (id.endsWith('@lid') && this.store) {
+                    const resolved = this.store.resolveIdentity(id);
+                    if (resolved && resolved.jid) return resolved.jid;
+                }
+                return id;
+            };
+
+            const formatParticipant = (p) => {
+                const rawId = p.id || '';
+                const isLid = rawId.endsWith('@lid');
+                let pnJid = p.jid || (!isLid ? rawId : null);
+
+                if (!pnJid && isLid && this.store) {
+                    const resolved = this.store.resolveIdentity(rawId);
+                    if (resolved && resolved.jid) {
+                        pnJid = resolved.jid;
+                    }
+                }
+
+                const finalId = pnJid || rawId;
+                const phone = pnJid ? pnJid.split('@')[0] : (!isLid ? rawId.split('@')[0] : null);
+
+                return {
+                    id: finalId,
+                    phone: phone,
+                    lid: isLid ? rawId : (p.lid || null),
+                    admin: p.admin || null,
+                    isAdmin: p.admin === 'admin' || p.admin === 'superadmin',
+                    isSuperAdmin: p.admin === 'superadmin'
+                };
+            };
+
             return {
                 success: true,
                 message: 'Group metadata retrieved successfully',
                 data: {
                     id: metadata.id,
                     subject: metadata.subject,
-                    subjectOwner: metadata.subjectOwner,
+                    subjectOwner: resolveId(metadata.subjectOwner),
                     subjectTime: metadata.subjectTime,
                     description: metadata.desc,
                     descriptionId: metadata.descId,
                     restrict: metadata.restrict,
                     announce: metadata.announce,
                     size: metadata.size,
-                    participants: metadata.participants?.map(p => ({
-                        id: p.id,
-                        admin: p.admin || null,
-                        isSuperAdmin: p.admin === 'superadmin'
-                    })),
+                    participants: (metadata.participants || []).map(formatParticipant),
                     creation: metadata.creation,
-                    owner: metadata.owner
+                    owner: resolveId(metadata.owner)
                 }
             };
         } catch (error) {
             return { success: false, message: error.message };
         }
+    }
+
+    /**
+     * Get all participants of a group
+     * @param {string} groupId - Group JID
+     * @returns {Object}
+     */
+    async groupGetParticipants(groupId) {
+        const meta = await this.groupGetMetadata(groupId);
+        if (!meta.success) return meta;
+
+        return {
+            success: true,
+            message: 'Group participants retrieved successfully',
+            data: {
+                groupId: meta.data.id,
+                subject: meta.data.subject,
+                count: meta.data.participants?.length || 0,
+                participants: meta.data.participants
+            }
+        };
     }
 
     /**

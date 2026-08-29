@@ -944,6 +944,8 @@
                                         group</option>
                                     <option value="POST|/api/whatsapp/groups/metadata">POST /groups/metadata - Get group
                                         metadata</option>
+                                    <option value="POST|/api/whatsapp/groups/participants">POST /groups/participants - Get
+                                        all participants</option>
                                     <option value="POST|/api/whatsapp/groups/leave">POST /groups/leave - Leave group
                                     </option>
                                     <option value="POST|/api/whatsapp/groups/join">POST /groups/join - Join via invite
@@ -1957,7 +1959,13 @@
                     sessionId: '',
                     groupId: '123456789@g.us'
                 };
-                helpText = 'ℹ️ Get detailed group info including participants, admins, and settings.';
+                helpText = 'ℹ️ Get detailed group info including participants (with phone numbers), admins, and settings.';
+            } else if (path.includes('/groups/participants') && !path.includes('/add') && !path.includes('/remove') && !path.includes('/promote') && !path.includes('/demote')) {
+                body = {
+                    sessionId: '',
+                    groupId: '123456789@g.us'
+                };
+                helpText = '👥 Get full list of group participants with real phone numbers and admin status.';
             } else if (path.includes('/groups/leave')) {
                 body = {
                     sessionId: '',

@@ -1191,15 +1191,40 @@ router.post('/groups', checkSession, async (req, res) => {
 router.post('/groups/metadata', checkSession, async (req, res) => {
     try {
         const { groupId } = req.body;
-        
+
         if (!groupId) {
             return res.status(400).json({
                 success: false,
                 message: 'Missing required field: groupId'
             });
         }
-        
+
         const result = await req.session.groupGetMetadata(groupId);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+/**
+ * Get all participants of a group
+ * Body: { sessionId, groupId }
+ */
+router.post('/groups/participants', checkSession, async (req, res) => {
+    try {
+        const { groupId } = req.body;
+
+        if (!groupId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required field: groupId'
+            });
+        }
+
+        const result = await req.session.groupGetParticipants(groupId);
         res.json(result);
     } catch (error) {
         res.status(500).json({

@@ -1289,7 +1289,7 @@
  *   post:
  *     tags: [Groups]
  *     summary: Get group metadata
- *     description: Get detailed group information
+ *     description: Get detailed group information with resolved participant phone numbers
  *     requestBody:
  *       required: true
  *       content:
@@ -1306,6 +1306,31 @@
  *     responses:
  *       200:
  *         description: Group metadata
+ */
+
+/**
+ * @swagger
+ * /api/whatsapp/groups/participants:
+ *   post:
+ *     tags: [Groups]
+ *     summary: Get all group participants
+ *     description: Get list of all participants in a group with phone numbers and admin roles
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [sessionId, groupId]
+ *             properties:
+ *               sessionId:
+ *                 type: string
+ *               groupId:
+ *                 type: string
+ *                 example: "120363123456789@g.us"
+ *     responses:
+ *       200:
+ *         description: List of group participants
  */
 
 /**
